@@ -15,8 +15,10 @@ defmodule LogReader do
 
   def sort_by_column(line) do
     line
-    |> String.split(~r/[\W\-]\s/)
-    |> Enum.filter(&(String.valid?(&1) && String.trim(&1) != ""))
+    |> String.replace("\t\t", " ")
+    |> String.replace(" ", "|")
+    |> String.split(~r/[(|–*?)]/)
+    |> Enum.filter(&(String.trim(&1) != ""))
     |> Enum.map(&(String.trim(&1)))
   end
 end
