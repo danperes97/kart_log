@@ -8,15 +8,21 @@ defmodule RaceAnalyzer do
     %{
       id:        String.to_integer(Enum.at(line, 2)),
       driver:    Enum.at(line, 1),
-      lap_time:  convert_times(Enum.at(line, 3)),
-      time:      convert_times(Enum.at(line, 0)),
+      lap_time:  convert_times({:lap_time, Enum.at(line, 3)}),
+      time:      convert_times({:time, Enum.at(line, 0)}),
       average:   String.to_float(Enum.at(line, 4))
       }
   end
 
-  def convert_times(string) do
+  def convert_times({:time, string}) do
     string
-    |> Time.from_iso8601
+    |> Timex.parse("%H:%M:%S.%f", :strftime)
+    |> elem(1)
+  end
+
+  def convert_times({:lap_time, string}) do
+    "0#{string}"
+    |> Timex.parse("%M:%S.%f", :strftime)
     |> elem(1)
   end
 end
